@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // Đọc giá trị từ application.yml. Nếu không tìm thấy, mặc định là true (Bảo mật)
+
     @Value("${app.security.enabled:true}")
     private boolean securityEnabled;
 

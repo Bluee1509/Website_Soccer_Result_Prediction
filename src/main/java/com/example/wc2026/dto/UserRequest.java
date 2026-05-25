@@ -18,7 +18,7 @@ public class UserRequest {
             regexp = "^(0|\\+84)(3|5|7|8|9)\\d{8}$",
             message = "Số điện thoại không đúng định dạng Việt Nam (ví dụ: 0912345678 hoặc +84912345678)"
     )
-    private String username; // Lúc này username đóng vai trò là Số điện thoại
+    private String username;
 
 
     @NotBlank(message = "Mật khẩu không được để trống")

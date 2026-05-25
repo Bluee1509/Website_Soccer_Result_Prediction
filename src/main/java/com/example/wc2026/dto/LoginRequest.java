@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * LoginRequest DTO - Yêu cầu đăng nhập
- * Nhận vào tên đăng nhập (số điện thoại) và mật khẩu
- */
+
 @Getter
 @Setter
 @NoArgsConstructor

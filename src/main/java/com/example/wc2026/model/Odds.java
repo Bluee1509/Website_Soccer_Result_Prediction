@@ -21,11 +21,11 @@ public class Odds {
     private Match match;
 
     @Column(name = "odd_type", nullable = false, length = 50)
-    private String oddType; // Ví dụ: 1X2, TAI_XIU
+    private String oddType;
 
     @Column(nullable = false, length = 50)
-    private String choice; // HOME, AWAY, DRAW, OVER, UNDER
+    private String choice;
 
     @Column(nullable = false, precision = 5, scale = 2)
-    private BigDecimal rate; // Tỷ lệ ăn thưởng (Ví dụ: 1.85)
+    private BigDecimal rate;
 }

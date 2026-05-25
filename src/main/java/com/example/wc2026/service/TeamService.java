@@ -13,7 +13,7 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
-    // Logic thêm đội bóng mới
+
     public Team createTeam(TeamRequest request) {
         String teamName = request.getName().trim();
 
@@ -29,7 +29,7 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    // Logic lấy danh sách toàn bộ đội bóng
+
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }

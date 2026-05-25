@@ -13,5 +13,5 @@ public class TeamRequest {
     @NotBlank(message = "Tên đội bóng không được để trống")
     private String name;
 
-    private String logoUrl; // Logo có thể bổ sung sau nên không cần @NotBlank
+    private String logoUrl;
 }

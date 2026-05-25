@@ -18,7 +18,6 @@ public class TeamController {
 
     @PostMapping
     public ResponseEntity<Team> addTeam(@Valid @RequestBody TeamRequest request) {
-        // Cực kỳ ngắn gọn và sang xịn mịn
         Team newTeam = teamService.createTeam(request);
         return ResponseEntity.ok(newTeam);
     }

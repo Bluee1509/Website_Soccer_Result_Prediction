@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    // Kiểm tra xem tên đội bóng đã tồn tại chưa để tránh tạo trùng
+
     boolean existsByName(String name);
 }

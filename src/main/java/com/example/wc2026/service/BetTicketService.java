@@ -18,9 +18,9 @@ public class BetTicketService {
     @Autowired private TransactionService transactionService; // Nhất quán dùng Service
 
     @Transactional
-    public BetTicket placeBet(BetTicketRequest request, String username) {  // ← Thêm username
-        // 1. DÙNG KHÓA BI QUAN: Khóa User ngay khi đọc để chống Spam đồng thời
-        User user = userRepository.findByUsernameForUpdate(username)  // ← Sẽ thêm method này sau
+    public BetTicket placeBet(BetTicketRequest request, String username) {
+
+        User user = userRepository.findByUsernameForUpdate(username)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng!"));
 
         Match match = matchRepository.findById(request.getMatchId())
@@ -33,19 +33,19 @@ public class BetTicketService {
         Odds odds = oddsRepository.findById(request.getOddsId())
                 .orElseThrow(() -> new RuntimeException("Tỷ lệ cược không hợp lệ!"));
 
-        // Kiểm tra tiền
+
         if (user.getBalance().compareTo(request.getAmount()) < 0) {
             throw new RuntimeException("Số dư không đủ!");
         }
 
-        // 2. Trừ tiền
+
         user.setBalance(user.getBalance().subtract(request.getAmount()));
         userRepository.save(user);
 
-        // 3. Ghi log Transaction
+
         transactionService.logTransaction(user, "BET", request.getAmount().negate());
 
-        // 4. Lập vé
+
         return betTicketRepository.save(BetTicket.builder()
                 .user(user)
                 .match(match)
@@ -67,14 +67,14 @@ public class BetTicketService {
             if (isWinner) {
                 ticket.setStatus("WON");
 
-                // Lấy lại User với Lock để cộng tiền chuẩn xác
+
                 User user = userRepository.findByIdForUpdate(ticket.getUser().getId())
                         .orElseThrow(() -> new RuntimeException("User không tồn tại"));
 
                 user.setBalance(user.getBalance().add(ticket.getPotentialWin()));
                 userRepository.save(user);
 
-                // Ghi log Transaction dùng Service
+
                 transactionService.logTransaction(user, "WIN", ticket.getPotentialWin());
             } else {
                 ticket.setStatus("LOST");

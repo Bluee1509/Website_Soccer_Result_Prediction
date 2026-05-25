@@ -20,7 +20,7 @@ public class BetTicketController {
     @PostMapping
     public ResponseEntity<BetTicket> placeBet(
             @Valid @RequestBody BetTicketRequest request,
-            Principal principal) {   // ← THÊM Principal vào đây
+            Principal principal) {
 
         if (principal == null) {
             throw new RuntimeException("Vui lòng đăng nhập để đặt cược!");

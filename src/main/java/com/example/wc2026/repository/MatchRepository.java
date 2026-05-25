@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
 
-    // 🌟 THÊM DÒNG NÀY: Spring tự hiểu và phân trang dựa vào tham số Pageable
+
     Page<Match> findAll(Pageable pageable);
 }

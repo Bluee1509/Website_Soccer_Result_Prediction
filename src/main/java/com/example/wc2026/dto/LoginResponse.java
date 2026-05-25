@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * LoginResponse DTO - Phản hồi đăng nhập
- * Trả về token, thông tin user, và các chi tiết khác
- */
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

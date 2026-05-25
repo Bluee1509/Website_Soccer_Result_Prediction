@@ -29,5 +29,5 @@ public class User {
     private BigDecimal balance;
 
     @Column(nullable = false, length = 20)
-    private String role; // USER hoặc ADMIN
+    private String role;
 }

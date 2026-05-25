@@ -21,21 +21,21 @@ public class Match {
 
     @ManyToOne
     @JoinColumn(name = "home_team_id", nullable = false)
-    private Team homeTeam; // Tham chiếu sang thực thể Đội nhà
+    private Team homeTeam;
 
     @ManyToOne
     @JoinColumn(name = "away_team_id", nullable = false)
-    private Team awayTeam; // Tham chiếu sang thực thể Đội khách
+    private Team awayTeam;
 
     @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime; // Ngày giờ diễn ra trận đấu
+    private LocalDateTime startTime;
 
     @Column(name = "home_score")
-    private Integer homeScore = 0; // Tỷ số đội nhà, mặc định = 0
+    private Integer homeScore = 0;
 
     @Column(name = "away_score")
-    private Integer awayScore = 0; // Tỷ số đội khách, mặc định = 0
+    private Integer awayScore = 0;
 
     @Column(nullable = false, length = 20)
-    private String status; // Trạng thái: PENDING, ONGOING, FINISHED
+    private String status;
 }

@@ -23,11 +23,9 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration:86400000}") // 24 hours in milliseconds
     private long jwtExpiration;
 
-    private SecretKey secretKey; // Cache SecretKey để tránh tính toán lại
+    private SecretKey secretKey;
 
-    /**
-     * Lazy init SecretKey (tính 1 lần khi cần)
-     */
+
     private SecretKey getSecretKey() {
         if (secretKey == null) {
             secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());

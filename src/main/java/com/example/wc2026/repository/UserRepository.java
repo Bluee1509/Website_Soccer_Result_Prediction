@@ -13,14 +13,14 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Hai hàm này dùng để kiểm tra xem tài khoản hoặc email đã có ai đăng ký chưa
+
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
-    // Tìm user theo username (số điện thoại)
+
     Optional<User> findByUsername(String username);
 
-    // === THÊM MỚI: Lock theo username để đặt cược an toàn ===
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT u FROM User u WHERE u.username = :username")
     Optional<User> findByUsernameForUpdate(@Param("username") String username);

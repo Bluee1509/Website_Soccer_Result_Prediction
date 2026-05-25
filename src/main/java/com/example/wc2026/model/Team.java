@@ -16,8 +16,8 @@ public class Team {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 100)
-    private String name; // Tên đội bóng (Ví dụ: Argentina, Pháp, Bồ Đào Nha...)
+    private String name;
 
     @Column(name = "logo_url")
-    private String logoUrl; // Đường dẫn ảnh logo/quốc kỳ của đội bóng
+    private String logoUrl;
 }

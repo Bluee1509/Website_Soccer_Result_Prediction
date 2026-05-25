@@ -33,11 +33,6 @@ public class UserController {
         }
     }
 
-    /**
-     * POST /api/users/login - Đăng nhập user
-     * Nhận vào số điện thoại + mật khẩu
-     * Trả về JWT Token nếu đăng nhập thành công
-     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
@@ -45,17 +40,17 @@ public class UserController {
             if (response.getToken() != null) {
                 return ResponseEntity.ok(response);
             } else {
-                // Đổi thành .status(401) thay vì .badRequest()
+
                 return ResponseEntity.status(401).body(response);
             }
         } catch (RuntimeException e) {
-            // Đổi thành .status(401) thay vì .badRequest()
+
             return ResponseEntity.status(401).body(LoginResponse.error(e.getMessage()));
         }
     }
     @GetMapping("/leaderboard")
     public ResponseEntity<List<User>> getLeaderboard() {
-        // Gọi xuống service để lấy danh sách top 10 đại gia
+
         return ResponseEntity.ok(userService    .getLeaderboard());
     }
 
@@ -70,7 +65,7 @@ public class UserController {
     }
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request, Principal principal) {
-        // Lấy username từ Token y như lúc nãy anh em mình làm
+
         userService.changePassword(principal.getName(), request.getOldPassword(), request.getNewPassword());
         return ResponseEntity.ok().body("{\"message\": \"Đổi mật khẩu thành công!\"}");
     }

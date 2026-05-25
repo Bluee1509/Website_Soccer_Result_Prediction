@@ -15,7 +15,6 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    // 🌟 API MỚI: Tự động trích xuất ai đang gọi qua Token
     @GetMapping("/my-transactions")
     public ResponseEntity<List<Transaction>> getMyTransactions(Principal principal) {
         String username = principal.getName();

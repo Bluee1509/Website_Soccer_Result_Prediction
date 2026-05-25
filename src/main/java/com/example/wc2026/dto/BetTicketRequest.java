@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class BetTicketRequest {
-    // private Long userId;  // ← XÓA hoặc comment
+
 
     @NotNull(message = "ID trận đấu không được để trống")
     private Long matchId;

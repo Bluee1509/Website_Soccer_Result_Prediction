@@ -18,7 +18,7 @@ public class TransactionService {
     public void logTransaction(User user, String type, BigDecimal amount) {
         Transaction tx = Transaction.builder()
                 .user(user)
-                .type(type) // "BET", "WIN"
+                .type(type)
                 .amount(amount)
                 .createdAt(LocalDateTime.now())
                 .build();

@@ -8,7 +8,7 @@ import java.util.List; // ⚠️ Dòng này là bắt buộc để bác sử d�
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    // Spring Data JPA sẽ tự động tạo truy vấn dựa trên tên phương thức này
+
     List<Transaction> findByUserIdOrderByCreatedAtDesc(Long userId);
     List<Transaction> findByUserUsernameOrderByCreatedAtDesc(String username);
 }

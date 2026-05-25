@@ -20,7 +20,7 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore // 🌟 Thêm dòng này để cắt đứt vòng lặp JSON
+    @JsonIgnore
     private User user;
 
     @Column(nullable = false, precision = 15, scale = 2)

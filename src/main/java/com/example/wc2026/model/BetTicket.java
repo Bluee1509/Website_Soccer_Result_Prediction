@@ -19,25 +19,25 @@ public class BetTicket {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // fk_tickets_user nối sang bảng users
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "match_id", nullable = false)
-    private Match match; // fk_tickets_match nối sang bảng matches
+    private Match match;
 
     @ManyToOne
     @JoinColumn(name = "odds_id", nullable = false)
-    private Odds odds; // fk_tickets_odds nối sang bảng odds dòng mới
+    private Odds odds;
 
     @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal amount; // Số tiền đặt cược
+    private BigDecimal amount;
 
     @Column(name = "potential_win", nullable = false, precision = 15, scale = 2)
-    private BigDecimal potentialWin; // Tiền thắng dự kiến (= amount * odds.rate)
+    private BigDecimal potentialWin;
 
     @Column(nullable = false, length = 20)
-    private String status; // PENDING, WON, LOST
+    private String status;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // Thời gian lập vé cược
+    private LocalDateTime createdAt;
 }

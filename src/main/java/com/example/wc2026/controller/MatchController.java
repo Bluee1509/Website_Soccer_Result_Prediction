@@ -24,26 +24,24 @@ public class MatchController {
 
     @PostMapping
     public ResponseEntity<Match> createMatch(@Valid @RequestBody MatchRequest request) {
-        // KHÔNG CẦN TRY-CATCH NỮA! Lỗi nếu có tự động bay thẳng vào GlobalExceptionHandler
+
         Match newMatch = matchService.createMatch(request);
         return ResponseEntity.ok(newMatch);
     }
 
-
-    // API dành cho Admin nhập kết quả trận đấu và kích hoạt hệ thống trả thưởng
     @PutMapping("/{id}/result")
     public ResponseEntity<Match> updateMatchResult(
             @PathVariable Long id,
             @Valid @RequestBody MatchResultRequest request) {
 
-        // Không cần try-catch, lỗi trận đấu đã kết thúc sẽ tự động nhảy vào GlobalExceptionHandler
+
         Match updatedMatch = matchService.updateMatchResult(id, request.getHomeScore(), request.getAwayScore());
         return ResponseEntity.ok(updatedMatch);
     }
     @GetMapping
     public ResponseEntity<Page<Match>> getAllMatches(
-            @RequestParam(defaultValue = "0") int page,  // Số trang (mặc định trang 0)
-            @RequestParam(defaultValue = "10") int size // Số phần tử mỗi trang (mặc định 10 dòng)
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
         Page<Match> matches = matchService.getMatchesPaged(page, size);
         return ResponseEntity.ok(matches);

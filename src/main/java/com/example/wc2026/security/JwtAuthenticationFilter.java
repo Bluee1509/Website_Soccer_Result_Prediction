@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-    // Đọc giá trị công tắc từ application.yml
+
     @Value("${app.security.enabled:true}")
     private boolean securityEnabled;
 
@@ -33,8 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // 🚀 THÁO BOM SỐ 2 NẰM Ở ĐÂY:
-        // Nếu công tắc bảo mật đang tắt -> Cho request đi thẳng luôn, không kiểm tra JWT nữa
+
         if (!securityEnabled) {
             filterChain.doFilter(request, response);
             return;
@@ -46,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null && jwtTokenProvider.isTokenValid(token)) {
                 String username = jwtTokenProvider.getUsernameFromToken(token);
 
-                // Truy quét tài khoản dưới DB để trích xuất Phân quyền chuẩn xác (Bác viết rất chuẩn!)
+
                 userRepository.findByUsername(username).ifPresent(user -> {
                     String formattedRole = "ROLE_" + user.getRole().toUpperCase().trim();
 

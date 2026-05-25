@@ -18,5 +18,5 @@ public class MatchRequest {
     private Long awayTeamId;
 
     @NotNull(message = "Thời gian trận đấu không được để trống")
-    private LocalDateTime startTime; // Định dạng chuẩn: YYYY-MM-DDTHH:mm:ss
+    private LocalDateTime startTime; 
 }
