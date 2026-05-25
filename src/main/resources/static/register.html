@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - WC2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
+
+<header class="bg-gradient-to-r from-blue-900 to-indigo-900 px-6 py-4 text-white shadow-md flex justify-between items-center">
+    <div class="flex items-center gap-3">
+        <span class="text-2xl">🏆</span>
+        <h1 class="text-lg font-black tracking-wider text-yellow-400 sm:text-xl">LỊCH THI ĐẤU WC2026</h1>
+    </div>
+    <a href="index.html" class="text-sm font-semibold text-slate-200 hover:text-yellow-400 transition-colors">
+        ◀ Về trang chủ
+    </a>
+</header>
+
+<main class="flex-1 flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
+        <h2 class="text-2xl font-black text-center text-slate-900 mb-2 uppercase tracking-wide">Đăng Ký</h2>
+        <p class="text-slate-400 text-center text-sm mb-6">Tạo tài khoản mới để tham gia hệ thống</p>
+
+        <div id="error-msg" class="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-xl text-sm font-semibold mb-4 hidden"></div>
+        <div id="success-msg" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-semibold mb-4 hidden"></div>
+
+        <form id="register-form" onsubmit="handleRegister(event)">
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Số điện thoại (Tài khoản)</label>
+                <input type="text" id="username" required placeholder="VD: 0912345678"
+                       class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 transition-colors text-sm font-medium">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Địa chỉ Email</label>
+                <input type="email" id="email" required placeholder="nguyenvana@gmail.com"
+                       class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 transition-colors text-sm font-medium">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mật khẩu</label>
+                <input type="password" id="password" required minlength="6" placeholder="Ít nhất 6 ký tự"
+                       class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 transition-colors text-sm font-medium">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Xác nhận mật khẩu</label>
+                <input type="password" id="confirm-password" required minlength="6" placeholder="Nhập lại mật khẩu"
+                       class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 transition-colors text-sm font-medium">
+            </div>
+
+            <button type="submit" id="btn-submit"
+                    class="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold rounded-xl active:scale-95 shadow-md transition-all text-sm uppercase tracking-wider cursor-pointer">
+                Hoàn tất đăng ký
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-slate-500">Đã có tài khoản? <a href="login.html" class="text-blue-900 font-bold hover:underline">Đăng nhập ngay</a></p>
+    </div>
+</main>
+
+<footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-200 bg-white">
+    &copy; 2026 Hệ thống Lịch thi đấu World Cup. All rights reserved.
+</footer>
+
+<script>
+    const REGISTER_API_URL = '/api/users/register';
+
+    async function handleRegister(event) {
+        event.preventDefault();
+
+        const errBox = document.getElementById('error-msg');
+        const successBox = document.getElementById('success-msg');
+        const btnSubmit = document.getElementById('btn-submit');
+
+        const usernameInput = document.getElementById('username').value.trim();
+        const emailInput = document.getElementById('email').value.trim(); // 🌟 Lấy thêm dữ liệu Email
+        const passwordInput = document.getElementById('password').value;
+        const confirmPasswordInput = document.getElementById('confirm-password').value;
+
+        errBox.classList.add('hidden');
+        successBox.classList.add('hidden');
+
+        if (passwordInput !== confirmPasswordInput) {
+            errBox.innerText = 'Mật khẩu xác nhận không khớp!';
+            errBox.classList.remove('hidden');
+            return;
+        }
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = 'ĐANG XỬ LÝ...';
+
+        try {
+            const response = await fetch(REGISTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // 🌟 Gửi trọn bộ 3 trường y hệt UserRequest.java
+                body: JSON.stringify({
+                    username: usernameInput,
+                    password: passwordInput,
+                    email: emailInput
+                })
+            });
+
+            if (response.ok) {
+                successBox.innerText = 'Đăng ký thành công! Đang chuyển hướng...';
+                successBox.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                let errorMessage = 'Đăng ký thất bại, vui lòng kiểm tra lại!';
+
+                // Lấy dữ liệu phản hồi dạng chữ thô trước để không bị kẹt luồng
+                const responseText = await response.text();
+
+                try {
+                    // Thử ép sang JSON (dành cho lỗi Validation của Spring Boot)
+                    const errData = JSON.parse(responseText);
+                    errorMessage = errData.message || errorMessage;
+                } catch(e) {
+                    // Nếu ép lỗi, chứng tỏ đây là chuỗi thô (như "Số điện thoại đã tồn tại") -> Bê nguyên lên UI
+                    errorMessage = responseText || errorMessage;
+                }
+
+                errBox.innerText = errorMessage;
+                errBox.classList.remove('hidden');
+
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'HOÀN TẤT ĐĂNG KÝ';
+            }
+        } catch (error) {
+            console.error('Lỗi API:', error);
+            errBox.innerText = 'Không thể kết nối đến hệ thống!';
+            errBox.classList.remove('hidden');
+
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = 'HOÀN TẤT ĐĂNG KÝ';
+        }
+    }
+</script>
+</body>
+</html>

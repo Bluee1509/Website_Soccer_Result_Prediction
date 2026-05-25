@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: db/migration/db.create-users-table.yml
+  - include:
+      file: db/migration/db.create-teams-table.yml
+  - include:
+      file: db/migration/db.create-matches-table.yml
+  - include:
+      file: db/migration/db.create-odds-table.yml
+  - include:
+      file: db/migration/db.create-bet-tickets-table.yml
+  - include:
+      file: db/migration/db.create-transactions-table.yml

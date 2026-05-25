@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wc2026
+    username: postgres
+    password: 15092002
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yml
+    drop-first: false
+
+# ĐÃ ĐƯA KHỐI APP RA NGOÀI CÙNG (Ngang hàng với spring, logging, jwt)
+app:
+  security:
+    enabled: true
+
+logging:
+  level:
+    liquibase: DEBUG
+    org.liquibase: DEBUG
+
+jwt:
+  secret: mySecretKeyForJwtTokenGenerationAndValidationPleaseUseLongStringForSecurity
+  expiration: 86400000

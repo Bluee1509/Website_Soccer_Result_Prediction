@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-matches-table-v2
+      author: anhhien
+      changes:
+        - createTable:
+            tableName: matches
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: home_team_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_matches_home_team
+                    referencedTableName: teams
+                    referencedColumnNames: id
+              - column:
+                  name: away_team_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_matches_away_team
+                    referencedTableName: teams
+                    referencedColumnNames: id
+              - column:
+                  name: start_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: home_score
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: away_score
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false

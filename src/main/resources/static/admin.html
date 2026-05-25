@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị - WC2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-900 font-sans text-slate-200">
+
+<header class="bg-slate-950 px-6 py-4 border-b border-slate-800 shadow-lg flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+        <span class="text-2xl">⚙️</span>
+        <h1 class="text-xl font-black tracking-wider text-red-500 uppercase">Admin Control Panel</h1>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="text-sm font-semibold text-slate-400" id="admin-username">Đang tải...</span>
+        <a href="index.html" class="text-sm font-bold bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors">Về trang chủ</a>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 mt-8 pb-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <datalist id="team-list"></datalist>
+    <datalist id="match-list"></datalist>
+
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-md h-fit">
+        <h2 class="text-lg font-black text-white uppercase mb-4 flex items-center gap-2">
+            <span>⚽</span> Tạo trận đấu mới
+        </h2>
+        <form id="create-match-form" onsubmit="createMatch(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Đội 1 (Nhập Tên)</label>
+                <div class="relative">
+                    <input type="text" id="homeTeamInput" list="team-list" autocomplete="off" placeholder="Gõ tên đội 1..." required class="w-full bg-slate-900 border border-slate-600 rounded-lg pl-4 pr-10 py-2 text-white focus:outline-none focus:border-red-500">
+                    <button type="button" onclick="setTeamLogo('home')" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xl hover:scale-110 transition-transform" title="Gán link Logo">🖼️</button>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Đội 2 (Nhập Tên)</label>
+                <div class="relative">
+                    <input type="text" id="awayTeamInput" list="team-list" autocomplete="off" placeholder="Gõ tên đội 2..." required class="w-full bg-slate-900 border border-slate-600 rounded-lg pl-4 pr-10 py-2 text-white focus:outline-none focus:border-red-500">
+                    <button type="button" onclick="setTeamLogo('away')" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xl hover:scale-110 transition-transform" title="Gán link Logo">🖼️</button>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Thời gian bắt đầu</label>
+                <input type="datetime-local" id="matchStartTime" required class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500">
+            </div>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition-colors mt-2">
+                Tạo Trận Đấu
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-md h-fit">
+        <h2 class="text-lg font-black text-white uppercase mb-4 flex items-center gap-2">
+            <span>⚖️</span> Lên kèo (Set Odds)
+        </h2>
+        <form id="create-odds-form" onsubmit="createOdds(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Chọn Trận Đấu (Nhập Tên)</label>
+                <input type="text" id="oddsMatchInput" list="match-list" autocomplete="off" placeholder="Gõ tên trận..." required class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Loại Kèo</label>
+                <select id="oddType" onchange="toggleOddInputs()" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500">
+                    <option value="1X2">Châu Âu (1X2) - Cài đặt 3 cửa</option>
+                    <option value="ASIAN">Châu Á (Handicap) - Cài đặt 2 cửa</option>
+                    <option value="OVER_UNDER">Tài Xỉu (O/U) - Cài đặt 2 cửa</option>
+                </select>
+            </div>
+
+            <div id="odds-inputs-container" class="grid grid-cols-3 gap-3 bg-slate-950/50 p-3 rounded-lg border border-slate-700 transition-all">
+                <div id="box-home">
+                    <label id="label-home" class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Rate Đội 1</label>
+                    <input type="number" step="0.01" id="rateHome" placeholder="vd: 1.50" class="w-full bg-slate-900 border border-slate-600 rounded text-center py-1.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div id="box-draw">
+                    <label id="label-draw" class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Rate Hòa</label>
+                    <input type="number" step="0.01" id="rateDraw" placeholder="vd: 3.20" class="w-full bg-slate-900 border border-slate-600 rounded text-center py-1.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div id="box-away">
+                    <label id="label-away" class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Rate Đội 2</label>
+                    <input type="number" step="0.01" id="rateAway" placeholder="vd: 4.00" class="w-full bg-slate-900 border border-slate-600 rounded text-center py-1.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition-colors mt-2">
+                Đẩy Kèo Lên Sàn
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-md h-fit">
+        <h2 class="text-lg font-black text-emerald-400 uppercase mb-4 flex items-center gap-2">
+            <span>🏁</span> Nhập kết quả trận
+        </h2>
+        <form id="update-result-form" onsubmit="updateResult(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Trận Đấu Cần Chốt (Nhập Tên)</label>
+                <input type="text" id="resultMatchInput" list="match-list" autocomplete="off" placeholder="Gõ tên trận..." required class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Bàn thắng Đội 1</label>
+                    <input type="number" id="homeScore" required class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white text-center font-black text-xl focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Bàn thắng Đội 2</label>
+                    <input type="number" id="awayScore" required class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white text-center font-black text-xl focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition-colors">
+                    Xác Nhận Tỷ Số & Trả Thưởng
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-xl shadow-2xl border-l-4 border-emerald-500 transform transition-transform translate-y-20 opacity-0 duration-300 z-50"></div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // 🌟 Lấy thêm Role
+
+    // 1. Nếu không có token -> Đuổi ra trang Login
+    if (!token) {
+        window.location.href = 'login.html';
+    }
+    // 2. Nếu có token nhưng KHÔNG PHẢI Admin -> Đuổi về Trang chủ
+    else if (role !== 'ADMIN' && role !== 'ROLE_ADMIN') {
+        alert('CẢNH BÁO: Khu vực dành riêng cho Quản trị viên!');
+        window.location.href = 'index.html';
+    }
+
+    document.getElementById('admin-username').innerText = `Admin: ${localStorage.getItem('username')}`;
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.className = `fixed bottom-5 right-5 px-6 py-3 rounded-xl shadow-2xl border-l-4 transform transition-transform duration-300 z-50 ${isError ? 'bg-red-900 text-white border-red-500' : 'bg-slate-800 text-white border-emerald-500'}`;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 6000); // Tăng lên 6s để kịp đọc Mã Trận
+    }
+
+    // --- BIẾN TOÀN CỤC ---
+    let globalTeams = [];
+    let globalMatches = [];
+    let tempLogos = { home: '', away: '' };
+
+    function setTeamLogo(side) {
+        let url = prompt(`Nhập link (URL) logo cho ${side === 'home' ? 'Đội 1' : 'Đội 2'}:`);
+        if (url) {
+            tempLogos[side] = url.trim();
+            showToast('Đã ghi nhận Logo tạm thời!');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTeams();
+        loadMatches();
+    });
+
+    async function loadTeams() {
+        try {
+            const res = await fetch('/api/teams');
+            if (res.ok) {
+                globalTeams = await res.json();
+                document.getElementById('team-list').innerHTML = globalTeams.map(t => `<option value="${t.name}">`).join('');
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadMatches() {
+        try {
+            const res = await fetch('/api/matches');
+            if (res.ok) {
+                let data = await res.json();
+                globalMatches = data.content ? data.content : data;
+                document.getElementById('match-list').innerHTML = globalMatches.map(m => {
+                    let hName = m.homeTeam?.name || 'Unknown';
+                    let aName = m.awayTeam?.name || 'Unknown';
+                    // 🌟 Hiển thị kèm MÃ TRẬN trong danh sách xổ xuống cho trực quan
+                    let codePrefix = m.matchCode ? `[${m.matchCode}] ` : '';
+                    return `<option value="${codePrefix}${hName} vs ${aName}">`;
+                }).join('');
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    function findMatchIdByString(str) {
+        if (!str) return null;
+        let s = str.toLowerCase().trim();
+
+        let match = globalMatches.find(m => {
+            // Lấy tên đội và mã trận chuyển về chữ thường để so sánh
+            let pureName = `${m.homeTeam?.name} vs ${m.awayTeam?.name}`.toLowerCase();
+            let code = m.matchCode ? m.matchCode.toLowerCase() : '';
+
+            // 1. Nếu Admin gõ đúng mã trận (vd: b931a1) HOẶC chuỗi có chứa mã trận
+            if (code && (s === code || s.includes(code))) {
+                return true;
+            }
+
+            // 2. Nếu Admin gõ tên đội (vd: anh vs pháp)
+            if (s.includes(pureName) || pureName.includes(s)) {
+                return true;
+            }
+
+            return false;
+        });
+        return match ? match.id : null;
+    }
+
+    // --- 1. TẠO TRẬN ĐẤU (CÓ FIX LỖI 400 & GỬI MÃ TRẬN) ---
+    async function createMatch(e) {
+        e.preventDefault();
+        let homeName = document.getElementById('homeTeamInput').value.trim();
+        let awayName = document.getElementById('awayTeamInput').value.trim();
+        let startTime = document.getElementById('matchStartTime').value;
+
+        // 🌟 FIX LỖI 400 BAD REQUEST: Nếu HTML gửi thời gian thiếu giây, tự động nối thêm ":00"
+        if (startTime.length === 16) {
+            startTime += ':00';
+        }
+
+        // 🌟 TỰ ĐỘNG TẠO MÃ TRẬN NGẪU NHIÊN 6 KÝ TỰ (Ví dụ: A7B9F1)
+        let generatedMatchCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        async function getOrCreateTeam(name, logoUrl) {
+            let existing = globalTeams.find(t => t.name.toLowerCase() === name.toLowerCase());
+            if (existing) return existing.id;
+
+            try {
+                const res = await fetch('/api/teams', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name: name, logo: logoUrl })
+                });
+                if (res.ok) {
+                    const newTeam = await res.json();
+                    globalTeams.push(newTeam);
+                    return newTeam.id;
+                }
+            } catch (err) {}
+            return null;
+        }
+
+        const homeId = await getOrCreateTeam(homeName, tempLogos.home);
+        const awayId = await getOrCreateTeam(awayName, tempLogos.away);
+
+        if (!homeId || !awayId) {
+            showToast('Lỗi: Thêm đội bóng thất bại. Kiểm tra lại API!', true); return;
+        }
+
+        // Đóng gói Payload gửi đi (Có kèm mã trận)
+        const payload = {
+            homeTeamId: homeId,
+            awayTeamId: awayId,
+            startTime: startTime,
+            matchCode: generatedMatchCode // Gửi luôn xuống cho DB lưu
+        };
+
+        try {
+            const res = await fetch('/api/matches', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                const newMatch = await res.json();
+
+                // 🌟 HIỂN THỊ CHỮ MÃ TRẬN TO RÕ RÀNG
+                let displayCode = newMatch.matchCode || generatedMatchCode;
+                showToast(`Tạo thành công! MÃ TRẬN CỦA BẠN LÀ: ${displayCode}`);
+
+                document.getElementById('homeTeamInput').value = '';
+                document.getElementById('awayTeamInput').value = '';
+                document.getElementById('matchStartTime').value = '';
+                tempLogos = { home: '', away: '' };
+
+                await loadMatches();
+                let h = newMatch.homeTeam?.name || homeName;
+                let a = newMatch.awayTeam?.name || awayName;
+                // Gán thẳng mã trận vào ô chọn kèo
+                document.getElementById('oddsMatchInput').value = `[${displayCode}] ${h} vs ${a}`;
+            } else {
+                showToast('Lỗi 400: Kiểm tra lại MatchRequest ở Backend', true);
+            }
+        } catch (err) { showToast('Mất kết nối', true); }
+    }
+
+    // --- 2. LÊN KÈO ---
+    // --- 2. LÊN KÈO (NÂNG CẤP BẮN 3 REQUEST CÙNG LÚC) ---
+    // 🌟 HÀM MỚI: ĐIỀU KHIỂN GIAO DIỆN ẨN/HIỆN Ô NHẬP THEO LOẠI KÈO
+    function toggleOddInputs() {
+        const type = document.getElementById('oddType').value;
+        const container = document.getElementById('odds-inputs-container');
+        const boxDraw = document.getElementById('box-draw');
+
+        const labelHome = document.getElementById('label-home');
+        const labelAway = document.getElementById('label-away');
+
+        if (type === '1X2') {
+            boxDraw.style.display = 'block';
+            container.className = 'grid grid-cols-3 gap-3 bg-slate-950/50 p-3 rounded-lg border border-slate-700 transition-all';
+            labelHome.innerText = 'Rate Đội 1';
+            labelAway.innerText = 'Rate Đội 2';
+        } else if (type === 'ASIAN') {
+            boxDraw.style.display = 'none';
+            container.className = 'grid grid-cols-2 gap-3 bg-slate-950/50 p-3 rounded-lg border border-slate-700 transition-all';
+            labelHome.innerText = 'Rate Đội 1 (Chấp)';
+            labelAway.innerText = 'Rate Đội 2';
+        } else if (type === 'OVER_UNDER') {
+            boxDraw.style.display = 'none';
+            container.className = 'grid grid-cols-2 gap-3 bg-slate-950/50 p-3 rounded-lg border border-slate-700 transition-all';
+            labelHome.innerText = 'Rate TÀI (Over)';
+            labelAway.innerText = 'Rate XỈU (Under)';
+        }
+    }
+
+    // --- 2. LÊN KÈO (XỬ LÝ ĐA LUỒNG) ---
+    async function createOdds(e) {
+        e.preventDefault();
+        const matchId = findMatchIdByString(document.getElementById('oddsMatchInput').value);
+        if (!matchId) { showToast('Lỗi: Không tìm thấy trận đấu này!', true); return; }
+
+        const oddType = document.getElementById('oddType').value;
+        let payloads = [];
+
+        // Đóng gói dữ liệu tùy theo loại kèo bác chọn
+        if (oddType === '1X2') {
+            payloads = [
+                { matchId: matchId, oddType: oddType, choice: 'HOME', rate: parseFloat(document.getElementById('rateHome').value) },
+                { matchId: matchId, oddType: oddType, choice: 'DRAW', rate: parseFloat(document.getElementById('rateDraw').value) },
+                { matchId: matchId, oddType: oddType, choice: 'AWAY', rate: parseFloat(document.getElementById('rateAway').value) }
+            ];
+        } else if (oddType === 'ASIAN') {
+            payloads = [
+                { matchId: matchId, oddType: oddType, choice: 'HOME', rate: parseFloat(document.getElementById('rateHome').value) },
+                { matchId: matchId, oddType: oddType, choice: 'AWAY', rate: parseFloat(document.getElementById('rateAway').value) }
+            ];
+        } else if (oddType === 'OVER_UNDER') {
+            payloads = [
+                { matchId: matchId, oddType: oddType, choice: 'OVER', rate: parseFloat(document.getElementById('rateHome').value) },
+                { matchId: matchId, oddType: oddType, choice: 'UNDER', rate: parseFloat(document.getElementById('rateAway').value) }
+            ];
+        }
+
+        // Lọc bỏ những ô mà Admin vô tình bỏ trống (tránh lỗi NaN)
+        payloads = payloads.filter(p => !isNaN(p.rate));
+
+        if (payloads.length === 0) {
+            showToast('Lỗi: Vui lòng nhập ít nhất một tỷ lệ Rate!', true); return;
+        }
+
+        try {
+            // Dùng Promise.all để bắn đồng loạt các kèo xuống Database
+            const requests = payloads.map(payload => fetch('/api/odds', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            }));
+
+            const responses = await Promise.all(requests);
+            if (responses.every(res => res.ok)) {
+                showToast(`Đã lên thành công ${payloads.length} cửa kèo!`);
+                document.getElementById('rateHome').value = '';
+                document.getElementById('rateDraw').value = '';
+                document.getElementById('rateAway').value = '';
+            } else {
+                showToast('Lỗi: Có trục trặc khi lưu kèo', true);
+            }
+        } catch (err) { showToast('Mất kết nối máy chủ', true); }
+    }
+
+    // --- 3. CHỐT TỶ SỐ ---
+    async function updateResult(e) {
+        e.preventDefault();
+        const matchId = findMatchIdByString(document.getElementById('resultMatchInput').value);
+        if (!matchId) { showToast('Lỗi: Không tìm thấy trận đấu này!', true); return; }
+
+        const payload = {
+            homeScore: parseInt(document.getElementById('homeScore').value),
+            awayScore: parseInt(document.getElementById('awayScore').value),
+            status: 'FINISHED'
+        };
+
+        try {
+            const res = await fetch(`/api/matches/${matchId}/result`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                showToast('Chốt tỷ số thành công!');
+                e.target.reset();
+                loadMatches();
+            } else { showToast('Lỗi chốt tỷ số', true); }
+        } catch (err) { showToast('Mất kết nối', true); }
+    }
+</script>
+</body>
+</html>

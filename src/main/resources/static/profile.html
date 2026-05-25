@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Cá Nhân - WC2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-800">
+
+<header class="bg-gradient-to-r from-blue-900 to-indigo-900 px-6 py-4 text-white shadow-md flex justify-between items-center">
+    <div class="flex items-center gap-3">
+        <span class="text-2xl">🏆</span>
+        <h1 class="text-lg font-black tracking-wider text-yellow-400">WC2026</h1>
+    </div>
+    <a href="index.html" class="text-sm font-semibold text-slate-200 hover:text-yellow-400 transition-colors">
+        ◀ Trở về lịch đấu
+    </a>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 mt-8 pb-10">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-6">
+        <div class="w-24 h-24 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-5xl shadow-inner">
+            👤
+        </div>
+        <div class="flex-1">
+            <h2 class="text-3xl font-black text-slate-900 uppercase mb-2" id="profile-username">Đang tải...</h2>
+            <p class="text-sm font-bold text-slate-500 mb-6">Thành viên hệ thống WC2026</p>
+            <div class="mt-4 mb-2">
+                <div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-5 py-2.5 rounded-xl shadow-sm">
+                    <span class="text-xl">💰</span>
+                    <span class="text-sm font-bold text-emerald-800 uppercase tracking-wider">Số dư hiện tại:</span>
+                    <span id="profile-balance" class="text-lg font-black text-emerald-600 font-mono">Đang tải...</span>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center sm:justify-start gap-3">
+                <button onclick="toggleBetHistory()" class="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                    📜 Lịch sử cược
+                </button>
+                <button onclick="toggleTransactionHistory()" class="px-5 py-2.5 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                    💳 Sao kê tiền
+                </button>
+                <button onclick="openPasswordModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                    🔒 Đổi mật khẩu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bet-history-section" class="hidden bg-slate-50 rounded-2xl border border-slate-200 p-6 mb-6 shadow-sm">
+        <h3 class="text-xl font-black text-slate-800 uppercase mb-4 flex items-center gap-2">
+            <span>📊</span> Danh sách vé cược
+        </h3>
+        <div id="bet-history-container" class="space-y-4"></div>
+    </div>
+
+    <div id="transaction-history-section" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <h3 class="text-xl font-black text-slate-800 uppercase mb-4 flex items-center gap-2">
+            <span>💳</span> Biến động số dư
+        </h3>
+        <div id="transaction-history-container" class="space-y-3"></div>
+    </div>
+</main>
+
+<div id="password-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300" id="password-modal-content">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-black text-slate-800 uppercase flex items-center gap-2"><span>🔒</span> Đổi mật khẩu</h3>
+            <button onclick="closePasswordModal()" class="text-slate-400 hover:text-red-500 transition-colors text-2xl leading-none">&times;</button>
+        </div>
+
+        <form id="password-form" onsubmit="handleChangePassword(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mật khẩu hiện tại</label>
+                <div class="relative">
+                    <input type="password" id="old-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('old-password', 'icon-old')" id="icon-old" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mật khẩu mới</label>
+                <div class="relative">
+                    <input type="password" id="new-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('new-password', 'icon-new')" id="icon-new" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nhập lại mật khẩu mới</label>
+                <div class="relative">
+                    <input type="password" id="confirm-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('confirm-password', 'icon-confirm')" id="icon-confirm" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="pwd-msg" class="hidden px-4 py-2 rounded-lg text-sm font-bold text-center"></div>
+
+            <div class="pt-2 flex gap-3">
+                <button type="button" onclick="closePasswordModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors">Hủy</button>
+                <button type="submit" id="btn-change-pwd" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">Xác Nhận Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+
+    if (!token) window.location.href = 'login.html';
+    document.getElementById('profile-username').innerText = username || 'Người chơi';
+
+    function formatMoney(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    // --- LẤY SỐ DƯ ---
+    function loadWalletBalance() {
+        if (!token) return;
+        fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+            .then(response => {
+                if (!response.ok) throw new Error("Lỗi");
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('profile-balance').innerText = formatMoney(data);
+            })
+            .catch(error => {
+                document.getElementById('profile-balance').innerText = '0 đ';
+                document.getElementById('profile-balance').classList.replace('text-emerald-600', 'text-red-500');
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadWalletBalance();
+    });
+
+    // --- TÍNH NĂNG 1: LỊCH SỬ CƯỢC ---
+    function toggleBetHistory() {
+        const section = document.getElementById('bet-history-section');
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            loadBetHistory();
+        } else {
+            section.classList.add('hidden');
+        }
+    }
+
+    async function loadBetHistory() {
+        const container = document.getElementById('bet-history-container');
+        container.innerHTML = '<p class="text-center text-slate-500 py-8 font-semibold animate-pulse">Đang tải dữ liệu vé cược...</p>';
+
+        try {
+            const response = await fetch('/api/bets/my-tickets', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const tickets = await response.json();
+                if (tickets.length === 0) {
+                    container.innerHTML = `<p class="text-center text-slate-500 py-8 font-semibold">Bạn chưa có vé cược nào.</p>`;
+                    return;
+                }
+
+                let html = '';
+                tickets.forEach(ticket => {
+                    let statusUI = '';
+                    if (ticket.status === 'WON') {
+                        statusUI = `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-black border border-emerald-200">THẮNG (+${formatMoney(ticket.potentialWin || 0)})</span>`;
+                    } else if (ticket.status === 'LOST') {
+                        statusUI = `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-black border border-red-200">THUA KÈO</span>`;
+                    } else {
+                        statusUI = `<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-black border border-blue-200">ĐANG CHỜ KẾT QUẢ</span>`;
+                    }
+
+                    let choiceText = 'N/A';
+                    if (ticket.odds && ticket.odds.choice) {
+                        if (ticket.odds.choice === 'HOME') choiceText = ticket.match?.homeTeam?.name || 'Đội nhà';
+                        else if (ticket.odds.choice === 'AWAY') choiceText = ticket.match?.awayTeam?.name || 'Đội khách';
+                        else if (ticket.odds.choice === 'DRAW') choiceText = 'Hòa';
+                        else choiceText = ticket.odds.choice;
+                    }
+
+                    html += `
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-indigo-300 transition-colors">
+                                <div>
+                                    <div class="text-xs font-bold text-slate-400 mb-1">Mã vé: #${ticket.id}</div>
+                                    <div class="text-base font-black text-slate-800 mb-1">Trận đấu: ${ticket.match?.homeTeam?.name || 'Home'} vs ${ticket.match?.awayTeam?.name || 'Away'}</div>
+                                    <div class="text-sm font-semibold text-slate-600">Dự đoán thắng: <span class="text-indigo-600 font-black">${choiceText}</span></div>
+                                </div>
+                                <div class="flex flex-col items-end gap-2 w-full sm:w-auto">
+                                    <div class="text-lg font-black text-slate-900">${formatMoney(ticket.amount)}</div>
+                                    ${statusUI}
+                                </div>
+                            </div>
+                        `;
+                });
+                container.innerHTML = html;
+            }
+        } catch (error) {
+            container.innerHTML = `<p class="text-red-500 font-bold p-4 text-center">Mất kết nối đến máy chủ!</p>`;
+        }
+    }
+
+    // --- TÍNH NĂNG 2: SAO KÊ DÒNG TIỀN ---
+    function toggleTransactionHistory() {
+        const section = document.getElementById('transaction-history-section');
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            loadTransactionHistory();
+        } else {
+            section.classList.add('hidden');
+        }
+    }
+
+    async function loadTransactionHistory() {
+        const container = document.getElementById('transaction-history-container');
+        container.innerHTML = '<p class="text-center text-slate-500 py-8 font-semibold animate-pulse">Đang tải sao kê ngân hàng...</p>';
+
+        try {
+            const response = await fetch('/api/transactions/my-transactions', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const txs = await response.json();
+
+                if (txs.length === 0) {
+                    container.innerHTML = `<p class="text-center text-slate-500 py-8 font-semibold">Chưa có phát sinh giao dịch nào.</p>`;
+                    return;
+                }
+
+                let html = '';
+                txs.forEach(tx => {
+                    let amountColor = 'text-emerald-600';
+                    let amountPrefix = '+';
+                    let typeBadge = '';
+
+                    if (tx.type === 'BET') {
+                        amountColor = 'text-red-600';
+                        amountPrefix = '-';
+                        typeBadge = `<span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-black tracking-wide">ĐẶT CƯỢC</span>`;
+                    } else if (tx.type === 'WIN') {
+                        typeBadge = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md text-xs font-black tracking-wide">TRÚNG THƯỞNG</span>`;
+                    } else if (tx.type === 'DEPOSIT') {
+                        typeBadge = `<span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-md text-xs font-black tracking-wide">NẠP TIỀN</span>`;
+                    }
+
+                    const displayAmount = Math.abs(tx.amount);
+                    let dateStr = 'Chưa xác định';
+                    if (tx.createdAt) {
+                        let d;
+                        if (Array.isArray(tx.createdAt)) {
+                            const [y, m, day, h, min, s] = tx.createdAt;
+                            d = new Date(y, m - 1, day, h, min, s || 0);
+                        } else {
+                            d = new Date(tx.createdAt);
+                        }
+                        dateStr = d.toLocaleDateString('vi-VN') + ' - ' + d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                    }
+
+                    html += `
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between items-center hover:bg-slate-100 transition-colors">
+                                <div>
+                                    <div class="mb-1.5">${typeBadge}</div>
+                                    <div class="text-xs font-bold text-slate-400">🕒 ${dateStr}</div>
+                                </div>
+                                <div class="text-xl font-black ${amountColor}">
+                                    ${amountPrefix}${formatMoney(displayAmount)}
+                                </div>
+                            </div>
+                        `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p class="text-red-500 font-bold p-4 text-center">Lỗi tải dữ liệu. Bác kiểm tra lại API /api/transactions nhé!</p>`;
+            }
+        } catch (error) {
+            container.innerHTML = `<p class="text-red-500 font-bold p-4 text-center">Mất kết nối đến máy chủ!</p>`;
+        }
+    }
+
+    // --- TÍNH NĂNG 3: ĐỔI MẬT KHẨU ---
+    const pwdModal = document.getElementById('password-modal');
+    const pwdModalContent = document.getElementById('password-modal-content');
+    const pwdMsg = document.getElementById('pwd-msg');
+
+    function openPasswordModal() {
+        document.getElementById('password-form').reset();
+        pwdMsg.classList.add('hidden');
+        pwdModal.classList.remove('hidden');
+        setTimeout(() => {
+            pwdModal.classList.remove('opacity-0');
+            pwdModalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closePasswordModal() {
+        pwdModal.classList.add('opacity-0');
+        pwdModalContent.classList.add('scale-95');
+        setTimeout(() => pwdModal.classList.add('hidden'), 300);
+    }
+
+    async function handleChangePassword(e) {
+        e.preventDefault();
+        const oldPwd = document.getElementById('old-password').value;
+        const newPwd = document.getElementById('new-password').value;
+        const confirmPwd = document.getElementById('confirm-password').value;
+        const btnSubmit = document.getElementById('btn-change-pwd');
+
+        pwdMsg.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-600', 'bg-red-50', 'text-red-600');
+
+        if (newPwd !== confirmPwd) {
+            pwdMsg.classList.add('bg-red-50', 'text-red-600');
+            pwdMsg.innerText = 'Mật khẩu xác nhận không khớp!';
+            return;
+        }
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = 'Đang xử lý...';
+
+        try {
+            const res = await fetch('/api/users/change-password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+            });
+
+            if (res.ok) {
+                pwdMsg.classList.add('bg-emerald-50', 'text-emerald-600');
+                pwdMsg.innerText = '🎉 Đổi mật khẩu thành công!';
+                document.getElementById('password-form').reset();
+                setTimeout(() => {
+                    closePasswordModal();
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                const err = await res.json();
+                pwdMsg.classList.add('bg-red-50', 'text-red-600');
+                pwdMsg.innerText = err.message || 'Mật khẩu cũ không chính xác!';
+            }
+        } catch (error) {
+            pwdMsg.classList.add('bg-red-50', 'text-red-600');
+            pwdMsg.innerText = 'Mất kết nối máy chủ!';
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = 'Xác Nhận Đổi';
+        }
+    }
+
+    function togglePasswordVisibility(inputId, iconButtonId) {
+        const inputField = document.getElementById(inputId);
+        const iconButton = document.getElementById(iconButtonId);
+
+        const iconShow = iconButton.querySelectorAll('svg')[0];
+        const iconHide = iconButton.querySelectorAll('svg')[1];
+
+        if (inputField.type === "password") {
+            inputField.type = "text";
+            iconShow.classList.add('hidden');
+            iconHide.classList.remove('hidden');
+        } else {
+            inputField.type = "password";
+            iconShow.classList.remove('hidden');
+            iconHide.classList.add('hidden');
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-bet-tickets-table-v2
+      author: anhhien
+      changes:
+        - createTable:
+            tableName: bet_tickets
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tickets_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: match_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tickets_match
+                    referencedTableName: matches
+                    referencedColumnNames: id
+              - column:
+                  name: odds_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tickets_odds
+                    referencedTableName: odds
+                    referencedColumnNames: id
+              - column:
+                  name: amount
+                  type: numeric(15, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: potential_win
+                  type: numeric(15, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false

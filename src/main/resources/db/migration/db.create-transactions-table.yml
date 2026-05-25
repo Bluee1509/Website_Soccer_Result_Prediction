@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-transactions-table-v2
+      author: anhhien
+      changes:
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: amount
+                  type: numeric(15, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false

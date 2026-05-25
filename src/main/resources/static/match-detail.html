@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết trận đấu - WC2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-800 pb-10">
+
+<header class="sticky top-0 z-50 bg-gradient-to-r from-blue-900 to-indigo-900 px-6 py-4 text-white shadow-md flex justify-between items-center">
+    <div class="flex items-center gap-3">
+        <span class="text-2xl">🏆</span>
+        <h1 class="text-lg font-black tracking-wider text-yellow-400 sm:text-xl">WC2026</h1>
+    </div>
+    <a href="index.html" class="text-sm font-semibold text-slate-200 hover:text-yellow-400 transition-colors">
+        ◀ Trở về lịch đấu
+    </a>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 mt-8">
+
+    <div id="admin-secret-box"></div>
+
+    <div id="match-info" class="bg-white rounded-2xl shadow-md border border-slate-100 p-8 text-center hidden mt-4">
+        <div class="text-sm font-bold text-slate-500 mb-6" id="match-time">📅 Đang tải thời gian...</div>
+
+        <div class="flex items-center justify-center gap-8">
+            <div class="flex flex-col items-center w-1/3">
+                <div class="text-6xl mb-3 border-4 border-slate-100 rounded-full p-2 bg-slate-50">⚽</div>
+                <h2 class="text-xl font-black text-slate-900 uppercase" id="home-team">Đang tải...</h2>
+            </div>
+
+            <div class="flex flex-col items-center justify-center w-1/3">
+                <div class="font-mono text-5xl font-black text-slate-900 bg-slate-100 px-6 py-3 rounded-2xl border-2 border-slate-200 shadow-inner" id="match-score">
+                    -
+                </div>
+                <div class="mt-3" id="match-status"></div>
+            </div>
+
+            <div class="flex flex-col items-center w-1/3">
+                <div class="text-6xl mb-3 border-4 border-slate-100 rounded-full p-2 bg-slate-50">⚽</div>
+                <h2 class="text-xl font-black text-slate-900 uppercase" id="away-team">Đang tải...</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 bg-white rounded-2xl shadow-md border border-slate-100 p-6 hidden" id="betting-section">
+        <h3 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-3 mb-6 uppercase flex justify-between items-center">
+            <span>📊 Đặt cược trận đấu</span>
+            <span class="text-sm text-slate-500 font-medium normal-case" id="wallet-balance">Số dư: Đang tải...</span>
+        </h3>
+
+        <form id="bet-form" onsubmit="handleBet(event)">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Chọn cửa cược (Odds)</label>
+                    <select id="odds-select" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 font-medium">
+                        <option value="">-- Đang tải bảng kèo... --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Số tiền cược (VNĐ)</label>
+                    <input type="number" id="bet-amount" required min="10000" step="10000" placeholder="Tối thiểu 10,000đ"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-900 font-medium">
+                </div>
+            </div>
+
+            <div id="bet-msg" class="px-4 py-3 rounded-xl text-sm font-semibold mb-4 hidden"></div>
+
+            <button type="submit" id="btn-bet" class="w-full py-3.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl active:scale-95 shadow-md transition-all uppercase tracking-wider">
+                Xác nhận đặt cược
+            </button>
+        </form>
+    </div>
+
+    <div id="login-required" class="mt-8 bg-yellow-50 rounded-2xl border border-yellow-200 p-8 text-center hidden">
+        <div class="text-4xl mb-4">🔒</div>
+        <h3 class="text-lg font-bold text-yellow-800 mb-2">Bạn chưa đăng nhập!</h3>
+        <p class="text-sm text-yellow-700 mb-6">Vui lòng đăng nhập hệ thống để xem tỷ lệ kèo và tham gia đặt cược.</p>
+        <a href="login.html" class="inline-block px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold rounded-xl shadow-md transition-all">Đăng nhập ngay</a>
+    </div>
+</main>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const matchId = urlParams.get('id');
+
+    const MATCH_API_URL = `/api/matches/${matchId}`;
+    const ODDS_API_URL = `/api/odds/match/${matchId}`;
+    const BET_API_URL = '/api/bets';
+
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role');
+
+    function formatMoney(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
+    }
+
+    function formatTime(dateInput) {
+        if (!dateInput) return "Chưa cập nhật";
+        try {
+            let d = Array.isArray(dateInput)
+                ? new Date(dateInput[0], dateInput[1] - 1, dateInput[2], dateInput[3] || 0, dateInput[4] || 0)
+                : new Date(dateInput);
+            return `${d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - ${d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+        } catch (e) { return dateInput; }
+    }
+
+    async function loadMatchDetails() {
+        if (!matchId) {
+            alert("Không tìm thấy ID trận đấu!");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        try {
+            // 1. LẤY TRẬN ĐẤU
+            const response = await fetch(MATCH_API_URL);
+            if (!response.ok) throw new Error("Không thể tải thông tin trận đấu");
+            const match = await response.json();
+
+            // 2. LẤY SỐ DƯ (NẾU ĐÃ ĐĂNG NHẬP)
+            if (token) {
+                fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('wallet-balance').innerText = `Số dư: ${formatMoney(data)}`;
+                    })
+                    .catch(() => document.getElementById('wallet-balance').innerText = 'Số dư: 0đ');
+            }
+
+            // 3. MẮT THẦN ADMIN
+            if (userRole === 'ROLE_ADMIN' || userRole === 'ADMIN') {
+                const secretBox = document.getElementById('admin-secret-box');
+                secretBox.innerHTML = `
+                    <div class="bg-red-950/10 border border-red-800/20 rounded-xl p-4 flex items-center justify-between shadow-sm mt-4">
+                        <div>
+                            <div class="text-red-600 font-black text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><span>🔒</span> Khu vực Admin</div>
+                            <div class="text-slate-600 text-sm font-semibold">Mã cắm kèo (Match Code):</div>
+                        </div>
+                        <div class="bg-white border-2 border-red-200 text-red-600 font-mono text-xl font-black px-5 py-2 rounded-lg select-all cursor-pointer hover:bg-red-50 transition-colors" title="Click đúp để copy">
+                            ${match.matchCode || 'CHƯA CÓ'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 4. RENDER DỮ LIỆU
+            document.getElementById('match-info').classList.remove('hidden');
+            document.getElementById('match-time').innerText = `📅 ${formatTime(match.startTime)}`;
+            document.getElementById('home-team').innerText = match.homeTeam?.name || 'Đội 1';
+            document.getElementById('away-team').innerText = match.awayTeam?.name || 'Đội 2';
+
+            if (match.status !== 'PENDING') {
+                document.getElementById('match-score').innerText = `${match.homeScore} - ${match.awayScore}`;
+            } else {
+                document.getElementById('match-score').innerText = 'VS';
+            }
+
+            let statusHtml = match.status === 'FINISHED' ? `<span class="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-bold">KẾT THÚC</span>`
+                : match.status === 'ONGOING' ? `<span class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">TRỰC TIẾP</span>`
+                    : `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">CHƯA ĐÁ</span>`;
+            document.getElementById('match-status').innerHTML = statusHtml;
+
+            if (token) {
+                if (match.status === 'PENDING') {
+                    document.getElementById('betting-section').classList.remove('hidden');
+                    loadOddsForMatch(match);
+                } else {
+                    document.getElementById('login-required').classList.remove('hidden');
+                    document.getElementById('login-required').innerHTML = `<h3 class="text-lg font-bold text-slate-600">Trận đấu này đã khóa nhận cược.</h3>`;
+                }
+            } else {
+                document.getElementById('login-required').classList.remove('hidden');
+            }
+
+        } catch (error) {
+            document.getElementById('match-info').classList.remove('hidden');
+            document.getElementById('match-info').innerHTML = `<p class="text-red-500 font-bold py-10">Lỗi: Tải thông tin trận đấu thất bại!</p>`;
+        }
+    }
+
+    async function loadOddsForMatch(match) {
+        const select = document.getElementById('odds-select');
+        const btn = document.getElementById('btn-bet');
+
+        try {
+            const res = await fetch(ODDS_API_URL);
+            if (res.ok) {
+                const oddsList = await res.json();
+
+                if (oddsList.length === 0) {
+                    select.innerHTML = '<option value="">Trận này chưa có kèo nào được mở</option>';
+                    select.disabled = true;
+                    btn.disabled = true;
+                    btn.className = "w-full py-3.5 bg-slate-400 text-white font-bold rounded-xl uppercase tracking-wider cursor-not-allowed";
+                    return;
+                }
+
+                let optionsHtml = '<option value="">-- Vui lòng chọn cửa cược --</option>';
+                oddsList.forEach(odd => {
+                    let choiceName = odd.choice;
+                    if (odd.choice === 'HOME') choiceName = match.homeTeam?.name || 'Đội 1';
+                    else if (odd.choice === 'AWAY') choiceName = match.awayTeam?.name || 'Đội 2';
+                    else if (odd.choice === 'DRAW') choiceName = 'Hòa';
+
+                    let oddTypeName = odd.oddType === '1X2' ? 'Châu Âu' : (odd.oddType === 'ASIAN' ? 'Chấp' : 'Tài Xỉu');
+
+                    optionsHtml += `<option value="${odd.id}">[${oddTypeName}] Đặt ${choiceName} - Tỷ lệ ăn: x${odd.rate}</option>`;
+                });
+                select.innerHTML = optionsHtml;
+            } else {
+                select.innerHTML = '<option value="">Lỗi tải bảng kèo</option>';
+            }
+        } catch (e) {
+            select.innerHTML = '<option value="">Lỗi kết nối bảng kèo</option>';
+        }
+    }
+
+    async function handleBet(event) {
+        event.preventDefault();
+
+        const oddsId = document.getElementById('odds-select').value;
+        const amount = document.getElementById('bet-amount').value;
+        const msgBox = document.getElementById('bet-msg');
+        const btn = document.getElementById('btn-bet');
+
+        msgBox.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerText = 'ĐANG XỬ LÝ...';
+
+        // 🌟 KHÔNG CẦN USER ID NỮA, CHỈ GỬI MATCH ID VÀ ODDS ID
+        const payload = {
+            matchId: parseInt(matchId),
+            oddsId: parseInt(oddsId),
+            amount: parseFloat(amount)
+        };
+
+        try {
+            const response = await fetch(BET_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                msgBox.className = 'px-4 py-3 rounded-xl text-sm font-semibold mb-4 bg-emerald-50 text-emerald-700 border border-emerald-200';
+                msgBox.innerText = '🎉 Đặt cược thành công! Chúc bạn may mắn.';
+                msgBox.classList.remove('hidden');
+                document.getElementById('bet-form').reset();
+
+                // Cập nhật lại số dư ngay sau khi đặt cược thành công
+                fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+                    .then(r => r.json())
+                    .then(data => document.getElementById('wallet-balance').innerText = `Số dư: ${formatMoney(data)}`);
+                setTimeout(() => {
+                    msgBox.classList.add('hidden');
+                }, 3000);
+            } else {
+                const errData = await response.json();
+                msgBox.className = 'px-4 py-3 rounded-xl text-sm font-semibold mb-4 bg-red-50 text-red-600 border border-red-200';
+                msgBox.innerText = errData.message || 'Lỗi đặt cược!';
+                msgBox.classList.remove('hidden');
+            }
+        } catch (error) {
+            msgBox.className = 'px-4 py-3 rounded-xl text-sm font-semibold mb-4 bg-red-50 text-red-600 border border-red-200';
+            msgBox.innerText = 'Mất kết nối đến máy chủ!';
+            msgBox.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'XÁC NHẬN ĐẶT CƯỢC';
+        }
+    }
+
+    window.onload = loadMatchDetails;
+</script>
+</body>
+</html>

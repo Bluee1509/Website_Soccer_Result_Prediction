@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-odds-table-v2
+      author: anhhien
+      changes:
+        - createTable:
+            tableName: odds
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: match_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_odds_match
+                    referencedTableName: matches
+                    referencedColumnNames: id
+              - column:
+                  name: odd_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: choice
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rate
+                  type: numeric(5, 2)
+                  constraints:
+                    nullable: false
