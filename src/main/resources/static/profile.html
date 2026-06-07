@@ -34,13 +34,20 @@
                 </div>
             </div>
             <div class="flex flex-wrap justify-center sm:justify-start gap-3">
-                <button onclick="toggleBetHistory()" class="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                <button onclick="openDepositModal()"
+                        class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                    💰 Nạp tiền
+                </button>
+                <button onclick="toggleBetHistory()"
+                        class="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
                     📜 Lịch sử cược
                 </button>
-                <button onclick="toggleTransactionHistory()" class="px-5 py-2.5 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                <button onclick="toggleTransactionHistory()"
+                        class="px-5 py-2.5 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
                     💳 Sao kê tiền
                 </button>
-                <button onclick="openPasswordModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                <button onclick="openPasswordModal()"
+                        class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
                     🔒 Đổi mật khẩu
                 </button>
             </div>
@@ -62,25 +69,32 @@
     </div>
 </main>
 
-<div id="password-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300" id="password-modal-content">
+<div id="password-modal"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300"
+         id="password-modal-content">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-black text-slate-800 uppercase flex items-center gap-2"><span>🔒</span> Đổi mật khẩu</h3>
-            <button onclick="closePasswordModal()" class="text-slate-400 hover:text-red-500 transition-colors text-2xl leading-none">&times;</button>
+            <h3 class="text-xl font-black text-slate-800 uppercase flex items-center gap-2"><span>🔒</span> Đổi mật khẩu
+            </h3>
+            <button onclick="closePasswordModal()"
+                    class="text-slate-400 hover:text-red-500 transition-colors text-2xl leading-none">&times;
+            </button>
         </div>
 
         <form id="password-form" onsubmit="handleChangePassword(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mật khẩu hiện tại</label>
                 <div class="relative">
-                    <input type="password" id="old-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
-                    <button type="button" onclick="togglePasswordVisibility('old-password', 'icon-old')" id="icon-old" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                    <input type="password" id="old-password" required
+                           class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('old-password', 'icon-old')" id="icon-old"
+                            class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878"/>
                         </svg>
                     </button>
                 </div>
@@ -89,14 +103,16 @@
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mật khẩu mới</label>
                 <div class="relative">
-                    <input type="password" id="new-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
-                    <button type="button" onclick="togglePasswordVisibility('new-password', 'icon-new')" id="icon-new" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                    <input type="password" id="new-password" required
+                           class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('new-password', 'icon-new')" id="icon-new"
+                            class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878"/>
                         </svg>
                     </button>
                 </div>
@@ -105,14 +121,17 @@
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nhập lại mật khẩu mới</label>
                 <div class="relative">
-                    <input type="password" id="confirm-password" required class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
-                    <button type="button" onclick="togglePasswordVisibility('confirm-password', 'icon-confirm')" id="icon-confirm" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                    <input type="password" id="confirm-password" required
+                           class="w-full pl-4 pr-11 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 font-medium">
+                    <button type="button" onclick="togglePasswordVisibility('confirm-password', 'icon-confirm')"
+                            id="icon-confirm"
+                            class="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.878 9.878"/>
                         </svg>
                     </button>
                 </div>
@@ -121,28 +140,103 @@
             <div id="pwd-msg" class="hidden px-4 py-2 rounded-lg text-sm font-bold text-center"></div>
 
             <div class="pt-2 flex gap-3">
-                <button type="button" onclick="closePasswordModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors">Hủy</button>
-                <button type="submit" id="btn-change-pwd" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">Xác Nhận Đổi</button>
+                <button type="button" onclick="closePasswordModal()"
+                        class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors">
+                    Hủy
+                </button>
+                <button type="submit" id="btn-change-pwd"
+                        class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-md">
+                    Xác Nhận Đổi
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<div id="deposit-modal"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300"
+         id="deposit-modal-content">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-black text-slate-800 uppercase flex items-center gap-2"><span>💰</span> Nạp tiền thử nghiệm</h3>
+            <button onclick="closeDepositModal()"
+                    class="text-slate-400 hover:text-red-500 transition-colors text-2xl leading-none">&times;
+            </button>
+        </div>
+
+        <form id="deposit-form" onsubmit="handleDeposit(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nhập số tiền muốn nạp (VNĐ)</label>
+                <input type="text" inputmode="numeric" id="deposit-amount" placeholder="Ví dụ: 100.000" required
+                       oninput="formatCurrencyInput(this)"
+                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-emerald-500 font-mono font-bold text-lg text-emerald-600">
+            </div>
+
+            <div id="deposit-msg" class="hidden px-4 py-2 rounded-lg text-sm font-bold text-center"></div>
+
+            <div class="pt-2 flex gap-3">
+                <button type="button" onclick="closeDepositModal()"
+                        class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors">
+                    Hủy
+                </button>
+                <button type="submit" id="btn-deposit-submit"
+                        class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors shadow-md">
+                    Xác Nhận Nạp
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <script>
+    function logoutAndRedirect() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        window.location.href = 'index.html';
+    }
+
+    async function authFetch(url, options = {}) {
+        const currentToken = localStorage.getItem('token');
+
+        if (!currentToken) {
+            window.location.href = 'index.html';
+            throw new Error('NO_TOKEN');
+        }
+
+        const headers = new Headers(options.headers || {});
+        headers.set('Authorization', 'Bearer ' + currentToken);
+
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            logoutAndRedirect();
+            throw new Error('TOKEN_EXPIRED');
+        }
+
+        return response;
+    }
+
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
 
-    if (!token) window.location.href = 'login.html';
+    if (!token) window.location.href = 'index.html';
     document.getElementById('profile-username').innerText = username || 'Người chơi';
 
     function formatMoney(amount) {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
     }
 
     // --- LẤY SỐ DƯ ---
     function loadWalletBalance() {
         if (!token) return;
-        fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+        authFetch('/api/users/me/balance', {headers: {'Authorization': 'Bearer ' + token}})
             .then(response => {
                 if (!response.ok) throw new Error("Lỗi");
                 return response.json();
@@ -160,7 +254,84 @@
         loadWalletBalance();
     });
 
-    // --- TÍNH NĂNG 1: LỊCH SỬ CƯỢC ---
+    // --- HÀM TỰ ĐỘNG THÊM DẤU CHẤM KHI NHẬP TIỀN ---
+    function formatCurrencyInput(input) {
+        let value = input.value.replace(/\D/g, '');
+        input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // --- TÍNH NĂNG NẠP TIỀN (MOCK PAYMENT) ---
+    const depositModal = document.getElementById('deposit-modal');
+    const depositModalContent = document.getElementById('deposit-modal-content');
+    const depositMsg = document.getElementById('deposit-msg');
+
+    function openDepositModal() {
+        document.getElementById('deposit-form').reset();
+        depositMsg.classList.add('hidden');
+        depositModal.classList.remove('hidden');
+        setTimeout(() => {
+            depositModal.classList.remove('opacity-0');
+            depositModalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeDepositModal() {
+        depositModal.classList.add('opacity-0');
+        depositModalContent.classList.add('scale-95');
+        setTimeout(() => depositModal.classList.add('hidden'), 300);
+    }
+
+    async function handleDeposit(e) {
+        e.preventDefault();
+
+        // Làm sạch tất cả dấu chấm trước khi gửi lên API
+        const rawAmount = document.getElementById('deposit-amount').value.replace(/\./g, '');
+        const amount = parseInt(rawAmount, 10);
+
+        const btnSubmit = document.getElementById('btn-deposit-submit');
+        depositMsg.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-600', 'bg-red-50', 'text-red-600');
+
+        if (isNaN(amount) || amount < 10000) {
+            depositMsg.classList.add('bg-red-50', 'text-red-600');
+            depositMsg.innerText = 'Số tiền nạp tối thiểu là 10.000đ!';
+            return;
+        }
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = 'Đang xử lý...';
+
+        try {
+            const res = await authFetch(`/api/payment/mock-deposit?amount=${amount}`, {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                depositMsg.classList.add('bg-emerald-50', 'text-emerald-600');
+                depositMsg.innerText = '🎉 Nạp tiền thử nghiệm thành công!';
+                document.getElementById('deposit-form').reset();
+
+                setTimeout(() => {
+                    closeDepositModal();
+                    loadWalletBalance();
+                    if (!document.getElementById('transaction-history-section').classList.contains('hidden')) {
+                        loadTransactionHistory();
+                    }
+                }, 1500);
+            } else {
+                const err = await res.json();
+                depositMsg.classList.add('bg-red-50', 'text-red-600');
+                depositMsg.innerText = err.message || 'Nạp tiền thất bại!';
+            }
+        } catch (error) {
+            depositMsg.classList.add('bg-red-50', 'text-red-600');
+            depositMsg.innerText = 'Mất kết nối máy chủ!';
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = 'Xác Nhận Nạp';
+        }
+    }
+
+    // --- TÍNH NĂNG LỊCH SỬ CƯỢC ---
     function toggleBetHistory() {
         const section = document.getElementById('bet-history-section');
         if (section.classList.contains('hidden')) {
@@ -176,9 +347,8 @@
         container.innerHTML = '<p class="text-center text-slate-500 py-8 font-semibold animate-pulse">Đang tải dữ liệu vé cược...</p>';
 
         try {
-            const response = await fetch('/api/bets/my-tickets', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
+            const response = await authFetch('/api/bets/my-tickets', {
+                method: 'GET'
             });
 
             if (response.ok) {
@@ -228,7 +398,7 @@
         }
     }
 
-    // --- TÍNH NĂNG 2: SAO KÊ DÒNG TIỀN ---
+    // --- TÍNH NĂNG SAO KÊ DÒNG TIỀN ---
     function toggleTransactionHistory() {
         const section = document.getElementById('transaction-history-section');
         if (section.classList.contains('hidden')) {
@@ -244,9 +414,8 @@
         container.innerHTML = '<p class="text-center text-slate-500 py-8 font-semibold animate-pulse">Đang tải sao kê ngân hàng...</p>';
 
         try {
-            const response = await fetch('/api/transactions/my-transactions', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
+            const response = await authFetch('/api/transactions/my-transactions', {
+                method: 'GET'
             });
 
             if (response.ok) {
@@ -283,7 +452,10 @@
                         } else {
                             d = new Date(tx.createdAt);
                         }
-                        dateStr = d.toLocaleDateString('vi-VN') + ' - ' + d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                        dateStr = d.toLocaleDateString('vi-VN') + ' - ' + d.toLocaleTimeString('vi-VN', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
                     }
 
                     html += `
@@ -307,7 +479,7 @@
         }
     }
 
-    // --- TÍNH NĂNG 3: ĐỔI MẬT KHẨU ---
+    // --- TÍNH NĂNG ĐỔI MẬT KHẨU ---
     const pwdModal = document.getElementById('password-modal');
     const pwdModalContent = document.getElementById('password-modal-content');
     const pwdMsg = document.getElementById('pwd-msg');
@@ -347,13 +519,12 @@
         btnSubmit.innerText = 'Đang xử lý...';
 
         try {
-            const res = await fetch('/api/users/change-password', {
+            const res = await authFetch('/api/users/change-password', {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+                body: JSON.stringify({oldPassword: oldPwd, newPassword: newPwd})
             });
 
             if (res.ok) {
@@ -363,7 +534,7 @@
                 setTimeout(() => {
                     closePasswordModal();
                     localStorage.clear();
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 }, 2000);
             } else {
                 const err = await res.json();

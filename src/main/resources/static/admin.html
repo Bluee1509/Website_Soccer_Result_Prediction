@@ -124,12 +124,45 @@
 <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-xl shadow-2xl border-l-4 border-emerald-500 transform transition-transform translate-y-20 opacity-0 duration-300 z-50"></div>
 
 <script>
+    function logoutAndRedirect() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        window.location.href = 'index.html';
+    }
+
+    async function authFetch(url, options = {}) {
+        const currentToken = localStorage.getItem('token');
+
+        if (!currentToken) {
+            window.location.href = 'index.html';
+            throw new Error('NO_TOKEN');
+        }
+
+        const headers = new Headers(options.headers || {});
+        headers.set('Authorization', 'Bearer ' + currentToken);
+
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            logoutAndRedirect();
+            throw new Error('TOKEN_EXPIRED');
+        }
+
+        return response;
+    }
+
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role'); // 🌟 Lấy thêm Role
 
     // 1. Nếu không có token -> Đuổi ra trang Login
     if (!token) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }
     // 2. Nếu có token nhưng KHÔNG PHẢI Admin -> Đuổi về Trang chủ
     else if (role !== 'ADMIN' && role !== 'ROLE_ADMIN') {
@@ -167,7 +200,7 @@
 
     async function loadTeams() {
         try {
-            const res = await fetch('/api/teams');
+            const res = await authFetch('/api/teams');
             if (res.ok) {
                 globalTeams = await res.json();
                 document.getElementById('team-list').innerHTML = globalTeams.map(t => `<option value="${t.name}">`).join('');
@@ -177,7 +210,7 @@
 
     async function loadMatches() {
         try {
-            const res = await fetch('/api/matches');
+            const res = await authFetch('/api/matches');
             if (res.ok) {
                 let data = await res.json();
                 globalMatches = data.content ? data.content : data;
@@ -236,7 +269,7 @@
             if (existing) return existing.id;
 
             try {
-                const res = await fetch('/api/teams', {
+                const res = await authFetch('/api/teams', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ name: name, logo: logoUrl })
@@ -266,7 +299,7 @@
         };
 
         try {
-            const res = await fetch('/api/matches', {
+            const res = await authFetch('/api/matches', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
@@ -361,7 +394,7 @@
 
         try {
             // Dùng Promise.all để bắn đồng loạt các kèo xuống Database
-            const requests = payloads.map(payload => fetch('/api/odds', {
+            const requests = payloads.map(payload => authFetch('/api/odds', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
@@ -392,7 +425,7 @@
         };
 
         try {
-            const res = await fetch(`/api/matches/${matchId}/result`, {
+            const res = await authFetch(`/api/matches/${matchId}/result`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)

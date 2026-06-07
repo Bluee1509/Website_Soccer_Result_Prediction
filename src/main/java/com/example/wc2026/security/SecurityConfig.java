@@ -59,7 +59,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/users").hasRole("ADMIN")
 
                             // 🌟 KHAI BÁO ĐÍCH DANH: Mở đường cho API vé cược và giao dịch (Chỉ cần có Token hợp lệ)
-                            .requestMatchers("/api/bets/**", "/api/transactions/**").authenticated()
+                            .requestMatchers("/api/bets/**", "/api/transactions/**", "/api/payment/**").authenticated()
 
                             .anyRequest().authenticated()
                     )

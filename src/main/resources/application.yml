@@ -12,13 +12,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+  data:
+    web:
+      page-serialization-mode: via-dto
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yml
     drop-first: false
 
-# ĐÃ ĐƯA KHỐI APP RA NGOÀI CÙNG (Ngang hàng với spring, logging, jwt)
+
 app:
   security:
     enabled: true

@@ -42,9 +42,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = getJwtFromRequest(request);
 
-            if (token != null && jwtTokenProvider.isTokenValid(token)) {
-                String username = jwtTokenProvider.getUsernameFromToken(token);
+            if (token != null) {
 
+                if (!jwtTokenProvider.isTokenValid(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"message\":\"Token expired\"}");
+                    return;
+                }
+
+                String username = jwtTokenProvider.getUsernameFromToken(token);
 
                 userRepository.findByUsername(username).ifPresent(user -> {
                     String formattedRole = "ROLE_" + user.getRole().toUpperCase().trim();
@@ -53,14 +60,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(
                                     username,
                                     null,
-                                    Collections.singletonList(new SimpleGrantedAuthority(formattedRole))
+                                    Collections.singletonList(
+                                            new SimpleGrantedAuthority(formattedRole)
+                                    )
                             );
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 });
             }
         } catch (Exception ex) {
-            logger.error("JWT token validation failed: " + ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Token expired\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);

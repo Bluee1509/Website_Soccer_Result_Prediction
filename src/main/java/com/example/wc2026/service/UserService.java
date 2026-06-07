@@ -117,4 +117,17 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+    // Thêm hàm này vào cuối file UserService.java trước dấu đóng ngoặc }
+    @org.springframework.transaction.annotation.Transactional
+    public void addBalance(String username, java.math.BigDecimal amount) {
+        User user = userRepository.findByUsernameForUpdate(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản người dùng!"));
+
+        // Cộng tiền vào tài khoản
+        user.setBalance(user.getBalance().add(amount));
+        userRepository.save(user);
+
+        // Gọi transactionService để tạo lịch sử biến động số dư (Loại giao dịch: DEPOSIT)
+        // Lưu ý: Vì class này chưa inject transactionService nên hãy kiểm tra xem ở đầu class UserService đã có @Autowired private TransactionService transactionService; chưa, nếu chưa thì thêm vào.
+    }
 }

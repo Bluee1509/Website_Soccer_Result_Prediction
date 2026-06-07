@@ -83,6 +83,39 @@
 </main>
 
 <script>
+    function logoutAndRedirect() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        window.location.href = 'index.html';
+    }
+
+    async function authFetch(url, options = {}) {
+        const currentToken = localStorage.getItem('token');
+
+        if (!currentToken) {
+            window.location.href = 'index.html';
+            throw new Error('NO_TOKEN');
+        }
+
+        const headers = new Headers(options.headers || {});
+        headers.set('Authorization', 'Bearer ' + currentToken);
+
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            logoutAndRedirect();
+            throw new Error('TOKEN_EXPIRED');
+        }
+
+        return response;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const matchId = urlParams.get('id');
 
@@ -122,7 +155,7 @@
 
             // 2. LẤY SỐ DƯ (NẾU ĐÃ ĐĂNG NHẬP)
             if (token) {
-                fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+                authFetch('/api/users/me/balance')
                     .then(res => res.json())
                     .then(data => {
                         document.getElementById('wallet-balance').innerText = `Số dư: ${formatMoney(data)}`;
@@ -238,7 +271,7 @@
         };
 
         try {
-            const response = await fetch(BET_API_URL, {
+            const response = await authFetch(BET_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -254,7 +287,7 @@
                 document.getElementById('bet-form').reset();
 
                 // Cập nhật lại số dư ngay sau khi đặt cược thành công
-                fetch('/api/users/me/balance', { headers: { 'Authorization': 'Bearer ' + token } })
+                authFetch('/api/users/me/balance')
                     .then(r => r.json())
                     .then(data => document.getElementById('wallet-balance').innerText = `Số dư: ${formatMoney(data)}`);
                 setTimeout(() => {
